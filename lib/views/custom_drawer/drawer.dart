@@ -1,14 +1,16 @@
 import 'package:buzztalk/constants/user_icon.dart';
 import 'package:buzztalk/controller/users_provider.dart';
 import 'package:buzztalk/helpers/helpers.dart';
-import 'package:buzztalk/model/user_model.dart';
 import 'package:buzztalk/service/auth_service.dart';
+import 'package:buzztalk/views/custom_drawer/widgets/dialogue_box.dart';
 import 'package:buzztalk/views/custom_drawer/widgets/list_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CustomDrawer extends StatefulWidget {
   CustomDrawer({
@@ -21,24 +23,20 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   AuthenticationService service = AuthenticationService();
-
   FirebaseAuth auth = FirebaseAuth.instance;
+  late UsersProvider usersProvider;
 
   var textButtonStyle =
       GoogleFonts.raleway(color: const Color.fromARGB(255, 33, 219, 243));
 
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController dobController = TextEditingController();
-
-  TextEditingController phoneController = TextEditingController();
-
-  TextEditingController aboutController = TextEditingController();
   @override
-  void initState() {
-    super.initState();
-    Provider.of<UsersProvider>(context,listen: false).getCurrentUser();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    usersProvider = Provider.of<UsersProvider>(context, listen: false);
+    usersProvider.getCurrentUser();
   }
+
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -62,8 +60,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       CircleAvatar(
                           radius: size.width * 0.065,
                           backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage(userIcon)),
+                          backgroundImage: authPro.currentUser?.profilePic !=
+                                  null
+                              ? NetworkImage(authPro.currentUser!.profilePic!)
+                              : AssetImage(userIcon) as ImageProvider),
                       spacingWidth(5),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +77,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ),
                           ),
                           Text(
-                            authPro.currentUser?.email??'Loading...',
+                            authPro.currentUser?.email ?? 'Loading...',
                             style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: size.width * 0.020,
@@ -89,20 +89,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   spacingHeight(size.height * 0.00),
                   Text(
-                    'Ph: 8089833972',
+                    'Ph: ${authPro.currentUser?.phoneNumber?.toString() ?? 'Loading...'}',
                     style: GoogleFonts.montserrat(
                         color: Colors.white, fontSize: 10),
                   ),
                   spacingHeight(size.height * 0.001),
-                  Text(
-                    'DOB: 12/17/1999',
-                    style: GoogleFonts.montserrat(
-                        color: Colors.white, fontSize: 10),
-                  ),
+                  // Text(
+                  //   'DOB: ${authPro.currentUser?.dob != null ? DateFormat('MM/dd/yyyy').format(authPro.currentUser!.dob!) : 'Loading...'}',
+                  //   style: GoogleFonts.montserrat(
+                  //       color: Colors.white, fontSize: 10),
+                  // ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () async {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AddDetailsDialog(
+                              auth: auth,
+                            );
+                          },
+                        );
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),

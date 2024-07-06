@@ -1,5 +1,6 @@
 import 'package:buzztalk/helpers/helpers.dart';
 import 'package:buzztalk/widgets/background_ellipse.dart';
+import 'package:buzztalk/widgets/main_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
@@ -27,7 +28,7 @@ class OtpScreen extends StatelessWidget {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.black,
+        color: Color(0xff03091F),
         child: Stack(children: [
           Ellipses(),
           SingleChildScrollView(
@@ -41,12 +42,10 @@ class OtpScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   goBackArrow(context),
-                  spacingHeight(width * 0.01),
-                  spacingHeight(height * 0.02),
-                  titlesofAuth(screenHeight: height, title: 'Enter the OTP'),
-                  spacingHeight(height * 0.02),
+                  spacingHeight(width * 0.05),
                   Center(
-                      child: Lottie.asset('assets/Animation - 1707475902081.json',
+                      child: Lottie.asset(
+                          'assets/O4zzqBr00P.json',
                           height: 240)),
                   spacingHeight(height * 0.02),
                   Center(
@@ -62,7 +61,8 @@ class OtpScreen extends StatelessWidget {
                       defaultPinTheme: PinTheme(
                           height: 60,
                           width: 60,
-                          textStyle: TextStyle(fontSize: 17, color: Colors.white),
+                          textStyle:
+                              TextStyle(fontSize: 17, color: Colors.white),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.white),
                               color: Colors.transparent,
@@ -70,29 +70,11 @@ class OtpScreen extends StatelessWidget {
                     ),
                   ),
                   spacingHeight(height * 0.04),
-                  InkWell(
-                      onTap: () {
-                        // verifyOtp(context, otpController.text,phone);
-                      },
-                      child: Container(
-                        height: height * 0.06,
-                        width: width * 0.90,
-                        decoration: BoxDecoration(
-                          color: Color(0xffFA7B06),
-                          borderRadius: BorderRadius.circular(50),
-            
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: height * 0.020,
-                            ),
-                          ),
-                        ),
-                      ))
+                  MainButtons(
+                      screenHeight: height,
+                      screenWidth: width,
+                      text: 'Submit',
+                      onPressed: () {})
                 ],
               ),
             ),

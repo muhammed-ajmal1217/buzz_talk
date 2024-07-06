@@ -29,82 +29,86 @@ class _SignUpPageState extends State<SignUpPage> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color(0xff3A487A),
       body: SingleChildScrollView(
         child: Container(
           height: height,
           width: width,
-          color: Colors.black,
+          color: Color(0xff03091F),
           child: Stack(
             children: [
               Ellipses(),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: height * 0.10,
-                  left: width * 0.05,
-                  right: width * 0.05,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        spacingHeight(height * 0.01),
-                        titlesofAuth(
-                            screenHeight: height,
-                            title: "Create new\nAccount\nSign-up with\nEmail"),
-                        spacingHeight(height * 0.02),
-                        textFields(
-                            controller: nameController,
-                            text: 'Name',
-                            fontSize: 13),
-                        spacingHeight(height * 0.02),
-                        textFields(
-                            controller: emailController,
-                            text: 'E-mail',
-                            fontSize: 13),
-                        spacingHeight(height * 0.01),
-                        Text(
-                          "Password must include 8 characters",
-                          style: GoogleFonts.aBeeZee(
-                            color: Colors.white,
-                            fontSize: height * 0.013,
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.05,
+                    right: width * 0.05,
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          spacingHeight(height * 0.01),
+                          titlesofAuth(
+                              screenHeight: height,
+                              title: "Sign up"),
+                          subTitleAuth(
+                              screenHeight: height,
+                              title: "If you are a new user Sign up with your\nE-mail and password."),
+                          
+                          spacingHeight(height * 0.02),
+                          textFields(
+                              controller: nameController,
+                              text: 'Name',
+                              fontSize: 13),
+                          spacingHeight(height * 0.02),
+                          textFields(
+                              controller: emailController,
+                              text: 'E-mail',
+                              fontSize: 13),
+                          spacingHeight(height * 0.01),
+                          Text(
+                            "Password must include 8 characters",
+                            style: GoogleFonts.aBeeZee(
+                              color: Colors.white,
+                              fontSize: height * 0.013,
+                            ),
                           ),
-                        ),
-                        spacingHeight(height * 0.01),
-                        textFields(
-                            controller: passwordController,
-                            text: 'Create password',
-                            fontSize: 13),
-                        spacingHeight(height * 0.02),
-                        textFields(
-                            controller: confirmController,
-                            text: 'Confirm password',
-                            fontSize: 13),
-                        spacingHeight(height * 0.01),
-                        ToggleScreen(
-                          screenHeight: height,
-                          screenWidth: width,
-                          toggleScreen: () => widget.showLogin(),
-                          text1: 'Already have an Account?',
-                          text2: 'Login',
-                        ),
-                        spacingHeight(height * 0.02),
-                        MainButtons(
-                          screenHeight: height,
-                          screenWidth: width,
-                          text: 'Sign up',
-                          onPressed: () {
-                            signUp();
-                            emailController.clear();
-                            passwordController.clear();
-                            nameController.clear();
-                            confirmController.clear();
-                          },
-                        ),
-                      ],
+                          spacingHeight(height * 0.01),
+                          textFields(
+                              controller: passwordController,
+                              text: 'Create password',
+                              fontSize: 13),
+                          spacingHeight(height * 0.02),
+                          textFields(
+                              controller: confirmController,
+                              text: 'Confirm password',
+                              fontSize: 13),
+                          spacingHeight(height * 0.01),
+                          ToggleScreen(
+                            screenHeight: height,
+                            screenWidth: width,
+                            toggleScreen: () => widget.showLogin(),
+                            text1: 'Already have an Account?',
+                            text2: 'Login',
+                          ),
+                          spacingHeight(height * 0.02),
+                          MainButtons(
+                            screenHeight: height,
+                            screenWidth: width,
+                            text: 'Sign up',
+                            onPressed: () {
+                              signUp();
+                              emailController.clear();
+                              passwordController.clear();
+                              nameController.clear();
+                              confirmController.clear();
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

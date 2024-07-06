@@ -6,14 +6,14 @@ class AuthButtons extends StatelessWidget {
     super.key,
     required this.screenHeight,
     required this.image,
-    required this.text,
+     this.text,
     required this.onPressed,
     
   });
 
   final double screenHeight;
   final String image;
-  final String text;
+  final String? text;
   final VoidCallback onPressed;
 
   @override
@@ -21,19 +21,19 @@ class AuthButtons extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        height: screenHeight * 0.06,
-        width: double.infinity,
+        height: screenHeight * 0.10,
+        width: screenHeight*0.10,
         decoration: BoxDecoration(
-          color: Color(0xffFFFFF),
-          borderRadius: BorderRadius.circular(50),
+          color: Color(0xff252159).withOpacity(0.6),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(image,height: 35,),
+            Image.asset(image,height: 55,),
             SizedBox(width: 6,),
             Text(
-              text,
+              text??'',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

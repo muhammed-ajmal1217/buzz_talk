@@ -2,7 +2,7 @@ import 'package:buzztalk/constants/app_colors.dart';
 import 'package:buzztalk/constants/user_icon.dart';
 import 'package:buzztalk/controller/users_provider.dart';
 import 'package:buzztalk/model/user_model.dart';
-import 'package:buzztalk/service/friend_connection_servce.dart';
+import 'package:buzztalk/service/friend_request_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -72,7 +72,7 @@ class UsersContainer extends StatelessWidget {
                 SizedBox(height: height * 0.01),
                 InkWell(
                   onTap: () async {
-                    FriendConnection().sendFriendRequest(user.userId!);
+                    FriendRequestService().sendFriendRequest(user.userId!);
                   },
                   child: Container(
                     height: 30,

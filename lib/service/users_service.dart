@@ -51,4 +51,33 @@ class UsersService {
       return {'users': [], 'lastDocument': null};
     }
   }
+    Future<List<String>> getFriendOrRequests(String key) async {
+    final currentUserId = authentication.currentUser!.uid;
+    try {
+      DocumentSnapshot currentUserSnapshot = 
+          await firestore.collection('users').doc(currentUserId).get();
+      Map<String, dynamic>? currentUserData = 
+          currentUserSnapshot.data() as Map<String, dynamic>?;
+      return List<String>.from(currentUserData?[key] ?? []);
+    } catch (e) {
+      print('Error getting friend requests: $e');
+      return [];
+    }
+  }
+
+  Future<UserModel> getUser(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot = 
+          await firestore.collection('users').doc(userId).get();
+      Map<String, dynamic>? userData = 
+          userSnapshot.data() as Map<String, dynamic>?;
+      return UserModel(
+        userId: userId,
+        userName: userData?['name'] ?? '',
+      );
+    } catch (e) {
+      print('Error getting user data: $e');
+      return UserModel();
+    }
+  }
 }

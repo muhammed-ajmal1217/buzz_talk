@@ -30,17 +30,16 @@ class _LoginPageState extends State<LoginPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xff3A487A),
       body: Container(
         height: screenHeight,
         width: screenWidth,
-        color: Colors.black,
+        color: Color(0xff03091F),
         child: Stack(
           children: [
             Ellipses(),
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(25.0),
                 child: SingleChildScrollView(
                   child: Consumer<AuthenticationProvider>(
                     builder: (context, authProvider, child) => Column(
@@ -49,8 +48,11 @@ class _LoginPageState extends State<LoginPage> {
                         spacingHeight(screenHeight * 0.01),
                         titlesofAuth(
                             screenHeight: screenHeight * 0.9,
+                            title: "Lets Start"),
+                        subTitleAuth(
+                            screenHeight: screenHeight * 0.9,
                             title:
-                                "Lets Connect\nWith your new\nFriends & Have a\nChitChat"),
+                                "Login with your email and password to \ncontinue."),
                         spacingHeight(screenHeight * 0.02),
                         textFields(
                             controller: emailController,
@@ -64,13 +66,16 @@ class _LoginPageState extends State<LoginPage> {
                         spacingHeight(screenHeight * 0.01),
                         InkWell(
                           onTap: () {},
-                          child: Text(
-                            'Forgot password?',
-                            style: TextStyle(
-                                color: Color(0xff02B4BF), fontSize: 11),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Forgot password?',
+                              style: TextStyle(
+                                  color: Color(0xff02B4BF), fontSize: 13),
+                            ),
                           ),
                         ),
-                        spacingHeight(screenHeight * 0.010),
+                        spacingHeight(screenHeight * 0.02),
                         MainButtons(
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
@@ -84,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                                 snackBarWidget(context, 'Login Successful');
                               } else if (user is FirebaseAuthException) {
                                 log(user.code);
-                                exceptionError(user,context);
+                                exceptionError(user, context);
                               }
                             }),
                         spacingHeight(screenHeight * 0.01),
@@ -98,44 +103,36 @@ class _LoginPageState extends State<LoginPage> {
                         spacingHeight(screenHeight * 0.010),
                         Center(
                           child: Text(
-                            'Or',
+                            '__________________________ OR __________________________',
                             style: TextStyle(
-                                color: Colors.white,
+                                color: Color.fromARGB(255, 116, 115, 115),
                                 fontSize: screenHeight * 0.013),
                           ),
                         ),
-                        spacingHeight(screenHeight * 0.01),
-                        AuthButtons(
-                          image: 'assets/facebook.png',
-                          screenHeight: screenHeight,
-                          text: 'Sign in with facebook',
-                          onPressed: () async {},
-                        ),
-                        spacingHeight(screenHeight * 0.01),
-                        AuthButtons(
-                          screenHeight: screenHeight,
-                          image: 'assets/google.png',
-                          text: 'Sign in with google',
-                          onPressed: () {},
-                        ),
-                        Center(
-                          child: Text(
-                            '____________________________________________________',
-                            style: TextStyle(
-                                color: Color(0xffFFFFF),
-                                fontSize: screenHeight * 0.013),
-                          ),
-                        ),
-                        spacingHeight(screenHeight * 0.01),
-                        AuthButtons(
-                          screenHeight: screenHeight,
-                          image: 'assets/phone.png',
-                          text: 'Sign in with phone',
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PhoneRequestPage(),
-                            ));
-                          },
+                        spacingHeight(screenHeight * 0.02),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            AuthButtons(
+                              image: 'assets/facebook_icon_png.png',
+                              screenHeight: screenHeight,
+                              onPressed: () async {},
+                            ),
+                            AuthButtons(
+                              screenHeight: screenHeight,
+                              image: 'assets/google_icon_png.png',
+                              onPressed: () {},
+                            ),
+                            AuthButtons(
+                              screenHeight: screenHeight,
+                              image: 'assets/mobile_png.png',
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PhoneRequestPage(),
+                                ));
+                              },
+                            )
+                          ],
                         )
                       ],
                     ),
@@ -148,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
   @override
   void dispose() {
     emailController.dispose();
