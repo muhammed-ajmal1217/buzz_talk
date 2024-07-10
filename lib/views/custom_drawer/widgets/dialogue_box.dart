@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:buzztalk/constants/user_icon.dart';
 import 'package:buzztalk/controller/drawer_controller.dart';
+import 'package:buzztalk/controller/image_controller.dart';
 import 'package:buzztalk/controller/story_controller.dart';
 import 'package:buzztalk/helpers/helpers.dart';
 import 'package:buzztalk/service/edit_profile_service.dart';
@@ -47,7 +48,7 @@ class AddDetailsDialog extends StatelessWidget {
         Center(
           child: Column(
             children: [
-              Consumer<StoryController>(
+              Consumer<ImageControllers>(
                 builder: (context, pro, child) => CircleAvatar(
                   backgroundImage: pro.selectedImage != null
                       ? FileImage(File(pro.selectedImage?.path ?? ''))
@@ -114,7 +115,7 @@ class AddDetailsDialog extends StatelessWidget {
             TextButton(
               onPressed: () {
                final drawerPro= Provider.of<DrawerControllers>(context, listen: false);
-               final imagePro= Provider.of<StoryController>(context, listen: false);
+               final imagePro= Provider.of<ImageControllers>(context, listen: false);
                    drawerPro .editProfile(
                         context: context,
                         selectedImage:imagePro.selectedImage,

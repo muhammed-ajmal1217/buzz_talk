@@ -6,6 +6,7 @@ import 'package:buzztalk/model/story_model.dart';
 import 'package:buzztalk/service/auth_service.dart';
 import 'package:buzztalk/service/story_service.dart';
 import 'package:buzztalk/views/add_story_screen/widgets/story_select_dialogue.dart';
+import 'package:buzztalk/views/recent_chats/recent_chats.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -34,18 +35,21 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
             width: size.width,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: pro.selectedImage != null
-                      ? FileImage(File(pro.selectedImage?.path??''))
+                  image: pro.selectedMedia != null
+                      ? FileImage(File(pro.selectedMedia?.path??''))
                       : AssetImage(userIcon)),
             ),
           ),
-          pro.selectedImage!=null?
+          pro.selectedMedia!=null?
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: InkWell(
-              onTap: () {
-                final story = Story(imageUrl: pro.selectedImage?.path, userId: AuthenticationService().authentication.currentUser?.uid??'');
-                StoryService().uploadImageStory(story);
+              onTap: () async{
+                final story = Story(mediaUrl: pro.selectedMedia?.path, userId: AuthenticationService().authentication.currentUser?.uid??'');
+                Provider.of<StoryController>(context,listen: false).uploadStory(context,story);
+                pro.selectedMedia=null;
+                await Future.delayed(Duration(seconds: 5));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatListPage(),));
               },
               child: Container(
                 height: 50,
@@ -63,7 +67,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
           ):Container(),
       ],
       ),
-     floatingActionButton:pro.selectedImage==null?  
+     floatingActionButton:pro.selectedMedia==null?  
      FloatingActionButton(
         backgroundColor: Colors.white.withOpacity(0.1),
         child: Icon(Icons.add,color: Colors.white,),

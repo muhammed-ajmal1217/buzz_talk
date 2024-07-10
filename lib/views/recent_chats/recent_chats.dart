@@ -1,16 +1,13 @@
-import 'package:buzztalk/controller/story_controller.dart';
 import 'package:buzztalk/helpers/helpers.dart';
 import 'package:buzztalk/views/chat_screen/chat_screen.dart';
 import 'package:buzztalk/views/custom_drawer/drawer.dart';
 import 'package:buzztalk/views/recent_chats/widgets/floating_action_button.dart';
 import 'package:buzztalk/views/recent_chats/widgets/status_list/status_list.dart';
-import 'package:buzztalk/widgets/background_ellipse.dart';
 import 'package:buzztalk/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:provider/provider.dart';
 
 class ChatListPage extends StatefulWidget {
   ChatListPage({

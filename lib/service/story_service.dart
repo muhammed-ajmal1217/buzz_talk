@@ -1,34 +1,48 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:buzztalk/model/story_model.dart';
 import 'package:buzztalk/model/user_model.dart';
-import 'package:buzztalk/service/users_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 class StoryService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   List<Story> stories = [];
+  List<UserModel> usersWithStories = [];
 
-  Future<void> uploadImageStory(Story story) async {
+  Future<void> uploadStory(Story story) async {
     try {
       String uid = _auth.currentUser!.uid;
-      CollectionReference statusCollection =
+      CollectionReference storiesCollection =
           _firestore.collection('users').doc(uid).collection('stories');
-      Reference storageRef = _storage
-          .ref()
-          .child('user_stories')
-          .child(uid)
-          .child("${DateTime.now().millisecondsSinceEpoch.toString()}.jpg");
-      UploadTask uploadTask = storageRef.putFile(File(story.imageUrl!));
+      String mediaPath = story.mediaUrl!;
+      Reference storageRef;
+      if (mediaPath.endsWith('.jpg') || mediaPath.endsWith('.jpeg') || mediaPath.endsWith('.png')) {
+        storageRef = _storage
+            .ref()
+            .child('user_stories')
+            .child(uid)
+            .child("${DateTime.now().millisecondsSinceEpoch.toString()}.jpg");
+      } else if (mediaPath.endsWith('.mp4')) {
+        storageRef = _storage
+            .ref()
+            .child('user_stories')
+            .child(uid)
+            .child("${DateTime.now().millisecondsSinceEpoch.toString()}.mp4");
+      } else {
+        throw Exception('Unsupported media format');
+      }
+
+      UploadTask uploadTask = storageRef.putFile(File(story.mediaUrl!));
       TaskSnapshot storageSnapshot = await uploadTask.whenComplete(() => null);
       String downloadUrl = await storageSnapshot.ref.getDownloadURL();
+
       String storyId = _firestore.collection('stories').doc().id;
-      await statusCollection.doc(storyId).set({
+      await storiesCollection.doc(storyId).set({
         'mediaUrl': downloadUrl,
         'timestamp': FieldValue.serverTimestamp(),
       });
@@ -42,9 +56,30 @@ class StoryService {
 Future<List<UserModel>> getUsersWithStories({required List<String> friends}) async {
   try {
     String currentUserId = _auth.currentUser!.uid;
-    friends.add(currentUserId);
-    Set<String> uniqueUserIds = {};
-    List<UserModel> usersWithStories = [];
+    
+    QuerySnapshot currentUserStoriesSnapshot = await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .collection('stories')
+        .get();
+
+    if (currentUserStoriesSnapshot.docs.isNotEmpty) {
+      friends.insert(0, currentUserId);
+      DocumentSnapshot currentUserSnapshot = await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .get();
+
+      if (currentUserSnapshot.exists) {
+        var currentUserModel = UserModel.fromJson(
+            currentUserSnapshot.data() as Map<String, dynamic>);
+        usersWithStories.add(currentUserModel);
+      } else {
+        log('Current user snapshot does not exist for userId: $currentUserId');
+      }
+    }
+
+    Set<String> uniqueUserIds = {if (currentUserStoriesSnapshot.docs.isNotEmpty) currentUserId};
     QuerySnapshot querySnapshot = await _firestore.collectionGroup('stories').get();
     for (var doc in querySnapshot.docs) {
       String userId = doc.reference.parent.parent!.id;
@@ -66,6 +101,8 @@ Future<List<UserModel>> getUsersWithStories({required List<String> friends}) asy
     return [];
   }
 }
+
+
 
 
   Future<List<Story>> getStories(String userId) async {

@@ -48,7 +48,7 @@ class _GradientBorderPaintState extends State<GradientBorderPaint>
     colors: [
       Color.fromARGB(255, 170, 0, 255),
       Color.fromARGB(255, 82, 255, 255),
-      Color.fromARGB(255, 105, 163, 240),
+      Color.fromARGB(255, 23, 14, 151),
     ],
   );
 

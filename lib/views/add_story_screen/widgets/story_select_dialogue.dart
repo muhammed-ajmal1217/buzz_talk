@@ -24,12 +24,12 @@ class StorySelectDialogue extends StatelessWidget {
                 StoryPickButton(
                   icon: Iconsax.camera,
                   text: 'Camera',
-                  onTap: () => pro.pickImage(ImageSource.camera),
+                  onTap: () => pro.pickMedia(ImageSource.camera),
                 ),
                 StoryPickButton(
                   icon: Iconsax.gallery,
                   text: 'Gallery',
-                  onTap: () => pro.pickImage(ImageSource.gallery),
+                  onTap: () => pro.pickMedia(ImageSource.gallery),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:buzztalk/controller/auth_provider.dart';
 import 'package:buzztalk/controller/chat_provider.dart';
 import 'package:buzztalk/controller/drawer_controller.dart';
+import 'package:buzztalk/controller/image_controller.dart';
 import 'package:buzztalk/controller/login_provider.dart';
 import 'package:buzztalk/controller/phone_auth_provider.dart';
 import 'package:buzztalk/controller/story_controller.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UsersProvider(),),
         ChangeNotifierProvider(create: (context) => StoryController(),),
         ChangeNotifierProvider(create: (context) => DrawerControllers(),),
+        ChangeNotifierProvider(create: (context) => ImageControllers(),),
       ],
       child: MaterialApp(
         
