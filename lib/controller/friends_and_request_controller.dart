@@ -41,7 +41,7 @@ Stream<List<UserModel>> getFriends() {
     String?targetUserId
   }) async {
     try {
-      FriendRequestService().sendFriendRequest(targetUserId!);
+      // FriendRequestService().sendFriendRequest(targetUserId!);
     } catch (e) {
       log('requesting Interrupted');
       throw Exception('requesting Interrupted : $e');

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:buzztalk/constants/app_colors.dart';
 import 'package:buzztalk/constants/user_icon.dart';
 import 'package:buzztalk/model/user_model.dart';
@@ -71,54 +73,49 @@ class _FriendsListState extends State<FriendsList> {
                 itemCount: _friendsList!.length,
                 itemBuilder: (context, index) {
                   UserModel friend = _friendsList![index];
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Text(
-                        friend.userName ?? '',
-                        style: GoogleFonts.raleway(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
+                  return ListTile(
+                    title: Text(
+                      friend.userName ?? '',
+                      style: GoogleFonts.raleway(
+                        color: Colors.white,
+                        fontSize: 14,
                       ),
-                      leading: GestureDetector(
-                        onTap: () {},
-                        child: Hero(
+                    ),
+                    leading: GestureDetector(
+                      onTap: () {
+                      },
+                      child: Hero(
                           tag: index,
-                          child: Container(
-                            height: size.height * 0.065,
-                            width: size.height * 0.065,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(userIcon),
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundImage: friend.profilePic != null &&
+                                    friend.profilePic!.isNotEmpty
+                                ? NetworkImage(friend.profilePic!)
+                                : AssetImage(userIcon) as ImageProvider,
+                          )),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ChatScreen(
+                                user: friend,
                               ),
-                            ),
+                            ));
+                          },
+                          child: Icon(
+                            Iconsax.message,
+                            color: Color.fromARGB(255, 10, 213, 189),
                           ),
                         ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ChatScreen(),
-                              ));
-                            },
-                            child: Icon(
-                              Iconsax.message,
-                              color: Color.fromARGB(255, 10, 213, 189),
-                            ),
-                          ),
-                          SizedBox(width: size.width * 0.03),
-                          Icon(
-                            Iconsax.profile_delete,
-                            color: Color.fromARGB(255, 244, 79, 54),
-                          ),
-                        ],
-                      ),
+                        SizedBox(width: size.width * 0.03),
+                        Icon(
+                          Iconsax.profile_delete,
+                          color: Color.fromARGB(255, 244, 79, 54),
+                        ),
+                      ],
                     ),
                   );
                 },

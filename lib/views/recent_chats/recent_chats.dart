@@ -139,12 +139,12 @@ class _ChatScreenState extends State<ChatListPage> {
                             itemBuilder: (context, index) {
                               return ListTile(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            ChatScreen(),
-                                      ));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           ChatScreen(),
+                                  //     ));
                                 },
                                 leading: CircleAvatar(),
                                 title: Text('message',

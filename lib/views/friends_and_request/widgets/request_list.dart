@@ -94,19 +94,25 @@ class _FriendsRequestState extends State<FriendsRequest> {
                               leading: GestureDetector(
                                 onTap: () {},
                                 child: Hero(
-                                  tag: index,
-                                  child: Container(
-                                    height: height * 0.065,
-                                    width: height * 0.065,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: AssetImage(userIcon),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                          tag: index,
+                          child: CircleAvatar(
+                            backgroundImage: request.profilePic != null &&
+                                        request.profilePic!.isNotEmpty
+                                    ? NetworkImage(request.profilePic!)
+                                    : AssetImage(userIcon) as ImageProvider,
+                          )
+                          // Container(
+                          //   height: size.height * 0.065,
+                          //   width: size.height * 0.065,
+                          //   decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(15),
+                          //     image: DecorationImage(
+                          //       fit: BoxFit.cover,
+                          //       image: 
+                          //     ),
+                          //   ),
+                          // ),
+                        ),
                               ),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,

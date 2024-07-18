@@ -1,32 +1,33 @@
 import 'package:buzztalk/model/message_model.dart';
 import 'package:buzztalk/service/auth_service.dart';
+import 'package:buzztalk/service/chat_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ChatProvider extends ChangeNotifier{
-  AuthenticationService authService = AuthenticationService();
-    ScrollController scrollController = ScrollController();
-    List<MessageModel> messages = [];
-      List<MessageModel> getMessages(String currentuserid,String recieverId) {
-    List ids = [currentuserid, recieverId];
+class ChatProvider extends ChangeNotifier {
+  ChatService chatService = ChatService();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  ScrollController scrollController = ScrollController();
+  List<MessageModel> messages = [];
+
+  void getMessages(String receiverId) {
+    final currentUserId= auth.currentUser!.uid;
+    List ids = [currentUserId, receiverId];
     ids.sort();
-    String chatroomid = ids.join("_");
-    authService.firestore
-        .collection("chat_room")
-        .doc(chatroomid)
-        .collection("messages")
-        .orderBy("time", descending: false)
-        .snapshots()
-        .listen((message) {
-      messages =
-          message.docs.map((doc) => MessageModel.fromJson(doc.data())).toList();
+    String chatRoomId = ids.join("_");
+
+    chatService.getMessages(chatRoomId).listen((messageList) {
+      messages = messageList;
       notifyListeners();
       scrollDown();
     });
-    return messages;
   }
-    void scrollDown() => WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        }
-      });
+
+  void scrollDown() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      }
+    });
+  }
 }

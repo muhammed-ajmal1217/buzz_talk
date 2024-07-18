@@ -28,7 +28,7 @@ class UsersService {
     return user;
   }
 
- Future<Map<String, dynamic>> getAllUsers({
+  Future<Map<String, dynamic>> getAllUsers({
     DocumentSnapshot? lastDocument,
     int limit = 20,
   }) async {
@@ -47,10 +47,11 @@ class UsersService {
       }
       return {'users': users, 'lastDocument': lastDoc};
     } catch (e) {
-      log('Error while fetching users: $e');
+      log('Error while fetching getAllUsers: $e');
       return {'users': [], 'lastDocument': null};
     }
   }
+
     Future<List<String>> getFriendOrRequests(String key) async {
     final currentUserId = authentication.currentUser!.uid;
     try {
@@ -65,18 +66,23 @@ class UsersService {
     }
   }
 
+
   Future<UserModel> getUser(String userId) async {
     try {
-      DocumentSnapshot userSnapshot = 
+      DocumentSnapshot userSnapshot =
           await firestore.collection('users').doc(userId).get();
-      Map<String, dynamic>? userData = 
+      Map<String, dynamic>? userData =
           userSnapshot.data() as Map<String, dynamic>?;
       return UserModel(
         userId: userId,
         userName: userData?['name'] ?? '',
+        email: userData?['email'] ?? '',
+        phoneNumber: userData?['phoneNumber'] ?? 0,
+        about: userData?['about'] ?? '',
+        profilePic: userData?['profile_pic'] ?? '',
       );
     } catch (e) {
-      print('Error getting user data: $e');
+      log('Error getting user data: $e');
       return UserModel();
     }
   }

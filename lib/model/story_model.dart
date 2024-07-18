@@ -7,6 +7,7 @@ class Story {
   final String? textContent;
   final DateTime? timestamp;
   final List<String>? viewers;
+  final String?storyType;
   bool viewed; 
 
   Story({
@@ -17,6 +18,7 @@ class Story {
     this.timestamp,
     this.viewers,
     this.viewed = false, 
+    this.storyType,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,6 +30,7 @@ class Story {
       'timestamp': timestamp,
       'viewers': viewers,
       'viewed': viewed, 
+      'storyType':storyType
     };
   }
 
@@ -40,6 +43,7 @@ class Story {
       timestamp: (json['timestamp'] as Timestamp?)?.toDate(),
       viewers: List<String>.from(json['viewers'] ?? []),
       viewed: json['viewed'] ?? false,
+      storyType: json['storyType']
     );
   }
 }

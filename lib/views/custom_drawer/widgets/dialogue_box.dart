@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -62,7 +63,7 @@ class AddDetailsDialog extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return const StorySelectDialogue();
+                      return  StorySelectDialogue(story: IsStory.image,);
                     },
                   );
                 },

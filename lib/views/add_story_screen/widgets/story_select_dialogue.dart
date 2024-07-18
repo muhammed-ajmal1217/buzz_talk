@@ -1,3 +1,4 @@
+import 'package:buzztalk/controller/image_controller.dart';
 import 'package:buzztalk/controller/story_controller.dart';
 import 'package:buzztalk/views/add_story_screen/widgets/story_pick_button.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+enum IsStory { story, image }
 class StorySelectDialogue extends StatelessWidget {
-  const StorySelectDialogue({
+  IsStory story;
+  StorySelectDialogue({
     super.key,
+    required this.story,
   });
 
   @override
@@ -15,8 +19,8 @@ class StorySelectDialogue extends StatelessWidget {
     return AlertDialog(
       backgroundColor: Colors.transparent,
       actions: [
-        Consumer<StoryController>(
-          builder: (context, pro, child) => Padding(
+        Consumer2<StoryController,ImageControllers>(
+          builder: (context, pro,pro1, child) => Padding(
             padding: const EdgeInsets.only(left: 30, right: 30),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -24,12 +28,12 @@ class StorySelectDialogue extends StatelessWidget {
                 StoryPickButton(
                   icon: Iconsax.camera,
                   text: 'Camera',
-                  onTap: () => pro.pickMedia(ImageSource.camera),
+                  onTap: () => _handlePick(pro,pro1,ImageSource.camera),
                 ),
                 StoryPickButton(
                   icon: Iconsax.gallery,
                   text: 'Gallery',
-                  onTap: () => pro.pickMedia(ImageSource.gallery),
+                  onTap: () => _handlePick(pro,pro1,ImageSource.gallery),
                 ),
               ],
             ),
@@ -38,4 +42,15 @@ class StorySelectDialogue extends StatelessWidget {
       ],
     );
   }
+
+  void _handlePick(StoryController storyController,
+      ImageControllers imageController, ImageSource source) {
+    if (story == IsStory.story) {
+      storyController.pickMedia(source);
+    } else {
+      imageController.pickImage(source);
+    }
+  }
 }
+
+

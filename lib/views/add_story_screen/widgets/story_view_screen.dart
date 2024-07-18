@@ -30,15 +30,29 @@ class StoryViewPage extends StatelessWidget {
       if (story.mediaUrl != null) {
         log('${story.mediaUrl}');
         log('User Id : ${story.id}');
-        return StoryItem.pageImage(
-          controller: controller,
-          url: story.mediaUrl!,
-          caption: Text(
-            story.userId ?? '',
-            style: TextStyle(color: Colors.white),
-          ),
-          duration: Duration(seconds: 5),
-        );
+        if (_isVideo(story.mediaUrl!)) {
+          log('This is a video: ${story.mediaUrl}');
+          return StoryItem.pageVideo(
+            story.mediaUrl!,
+            controller: controller,
+            caption: Text(
+              story.userId ?? '',
+              style: TextStyle(color: Colors.white),
+            ),
+            duration: Duration(seconds: 15),
+          );
+        } else {
+          log('This is an image: ${story.mediaUrl}');
+          return StoryItem.pageImage(
+            controller: controller,
+            url: story.mediaUrl!,
+            caption: Text(
+              story.userId ?? '',
+              style: TextStyle(color: Colors.white),
+            ),
+            duration: Duration(seconds: 5),
+          );
+        }
       } else {
         return StoryItem.text(
           title: story.id ?? '',
@@ -47,8 +61,10 @@ class StoryViewPage extends StatelessWidget {
         );
       }
     }).toList();
+
     bool isCurrentUsersStory =
         usersWithStories[currentIndex].userId == auth.currentUser?.uid;
+
     return Material(
       child: Stack(
         alignment: Alignment.bottomRight,
@@ -57,6 +73,7 @@ class StoryViewPage extends StatelessWidget {
             storyItems: storyViewItems,
             controller: controller,
             inline: false,
+            indicatorColor: Colors.grey,
             repeat: false,
             onComplete: () async {
               int nextIndex = currentIndex + 1;
@@ -79,17 +96,26 @@ class StoryViewPage extends StatelessWidget {
               }
             },
           ),
-          isCurrentUsersStory
-              ? AddStoryButton(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddStoryScreen(),
-                      )),
-                )
-              : Container()
+          if (isCurrentUsersStory)
+            AddStoryButton(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddStoryScreen(),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
+
+bool _isVideo(String url) {
+  final uri = Uri.parse(url);
+  final path = uri.path;
+  final extension = path.split('.').last.toLowerCase();
+  log('File extension: $extension');
+  return extension == 'mp4' || extension == 'avi' || extension == 'mov';
+}
+
 }

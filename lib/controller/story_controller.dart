@@ -64,12 +64,10 @@ class StoryController extends ChangeNotifier {
           await UsersService().getFriendOrRequests('friends');
       List<UserModel> friendsWithStories =
           await storyService.getUsersWithStories(friends: friends);
-
       usersWithStories = friendsWithStories;
-      isLoading = false;
-      notifyListeners();
     } catch (e) {
-      log('Error fetching users with stories: $e');
+      print('Error fetching users with stories: $e');
+    } finally {
       isLoading = false;
       notifyListeners();
     }

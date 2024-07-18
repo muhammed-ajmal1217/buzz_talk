@@ -8,8 +8,8 @@ class UserModel {
   int? phoneNumber; 
   String? about;
   DateTime? dob;
-  List<String>? friendRequests;
-  List<String>? friends;
+  List<dynamic>? friendRequests; 
+  List<dynamic>? friends;
   List<Story>? stories; 
 
   UserModel({
@@ -34,12 +34,10 @@ class UserModel {
       phoneNumber: json['phone_number'] is int ? json['phone_number'] : int.tryParse(json['phone_number'] ?? ''),
       about: json['about'],
       dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
-      friendRequests: json['friend_requests'] != null
-          ? List<String>.from(json['friend_requests'])
-          : [],
-      friends: json['friends'] != null ? List<String>.from(json['friends']) : [],
+      friendRequests: json['friend_requests'], 
+      friends: json['friends'],
       stories: json['stories'] != null 
-          ? List<Story>.from(json['stories'].map((x) => Story.fromJson(x))) 
+          ? List<Story>.from(json['stories'].map((x) => Story.fromJson(x)))
           : [],
     );
   }
