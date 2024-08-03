@@ -5,6 +5,7 @@ import 'package:buzztalk/helpers/helpers.dart';
 import 'package:buzztalk/model/user_model.dart';
 import 'package:buzztalk/service/auth_service.dart';
 import 'package:buzztalk/service/chat_service.dart';
+import 'package:buzztalk/views/chat_screen/bottom_sheet/bottom_sheet.dart';
 import 'package:buzztalk/views/chat_screen/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
               goBackArrow(context),
               spacingWidth(size.width * 0.02),
               CircleAvatar(
-                backgroundImage: widget.user.profilePic != null && widget.user.profilePic!.isNotEmpty
+                backgroundImage: widget.user.profilePic != null &&
+                        widget.user.profilePic!.isNotEmpty
                     ? NetworkImage(widget.user.profilePic!)
                     : AssetImage(userIcon) as ImageProvider,
               ),
@@ -124,31 +126,38 @@ class _ChatScreenState extends State<ChatScreen> {
                               children: [
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
                                     child: TextFormField(
                                       controller: messageController,
-                                      style: TextStyle(fontSize: 15, color: Colors.white),
+                                      style: TextStyle(
+                                          fontSize: 15, color: Colors.white),
                                       decoration: InputDecoration(
-                                        fillColor: Color.fromARGB(255, 19, 25, 35),
+                                        fillColor:
+                                            Color.fromARGB(255, 19, 25, 35),
                                         filled: true,
                                         hintText: 'Message...',
-                                        hintStyle: GoogleFonts.raleway(color: Colors.white, fontSize: 12),
-                                        floatingLabelStyle: TextStyle(color: Colors.white),
+                                        hintStyle: GoogleFonts.raleway(
+                                            color: Colors.white, fontSize: 12),
+                                        floatingLabelStyle:
+                                            TextStyle(color: Colors.white),
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(50),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
                                         ),
                                         suffixIcon: InkWell(
                                           onTap: () {
-                                            // showModalBottomSheet(
-                                            //   context: context,
-                                            //   builder: (BuildContext context) {
-                                            //     return Container(
-                                            //       height: size.height * 0.15,
-                                            //       child: BottomSheetPage(
-                                            //           user: widget.user),
-                                            //     );
-                                            //   },
-                                            // );
+                                            showModalBottomSheet(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                  height: size.height * 0.20,
+                                                  width: size.width,
+                                                  child: BottomSheetPage(
+                                                      user: widget.user),
+                                                );
+                                              },
+                                            );
                                           },
                                           child: Icon(
                                             Icons.attach_file,
@@ -165,16 +174,15 @@ class _ChatScreenState extends State<ChatScreen> {
                                       Icons.mic,
                                       color: Colors.white,
                                     ),
-                                    backgroundColor: Color.fromARGB(255, 26, 34, 46),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 26, 34, 46),
                                     radius: size.height * 0.036,
                                   ),
                                   onTap: () async {},
                                 ),
                                 spacingWidth(size.width * 0.02),
                                 InkWell(
-                                  onTap: () {
-                                    sendMessage();
-                                  },
+                                  onTap: () => sendMessage(),
                                   child: CircleAvatar(
                                     child: Icon(
                                       Icons.send,

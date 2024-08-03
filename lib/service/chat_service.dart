@@ -42,4 +42,11 @@ class ChatService {
           .toList();
     });
   }
+    void sendLocationMessage(String location, String receiverId) async {
+    try {
+      sendMessage(receiverId, location,);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

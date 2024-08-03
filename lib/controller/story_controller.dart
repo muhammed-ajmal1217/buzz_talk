@@ -4,6 +4,7 @@ import 'package:buzztalk/model/story_model.dart';
 import 'package:buzztalk/model/user_model.dart';
 import 'package:buzztalk/service/story_service.dart';
 import 'package:buzztalk/service/users_service.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,26 +16,26 @@ class StoryController extends ChangeNotifier {
   bool isLoadingCurrentUser = true;
   StoryService storyService = StoryService();
 
-  Future<void> pickMedia(ImageSource source) async {
-    final pickerFile = await (source == ImageSource.camera
-        ? imagePicker.pickImage(
-            source: source, preferredCameraDevice: CameraDevice.rear)
+  // Future<void> pickMedia() async {
+  //   final result = await FilePicker.platform.pickFiles(
+  //     type: FileType.media,
+  //     allowMultiple: false,
+  //   );
+
+  //   if (result != null && result.files.isNotEmpty) {
+  //     selectedMedia = File(result.files.single.path!);
+  //     notifyListeners();
+  //   }
+  // }
+    Future<void> captureMedia(ImageSource source, {bool isVideo = false}) async {
+    final pickedFile = await (isVideo
+        ? imagePicker.pickVideo(source: source, maxDuration: Duration(seconds: 15))
         : imagePicker.pickImage(source: source));
 
-    final pickerVideoFile = await (source == ImageSource.camera
-        ? imagePicker.pickVideo(
-            source: source, preferredCameraDevice: CameraDevice.rear)
-        : imagePicker.pickVideo(source: source));
-
-    if (pickerFile != null) {
-      selectedMedia = File(pickerFile.path);
-    } else if (pickerVideoFile != null) {
-      selectedMedia = File(pickerVideoFile.path);
-    } else {
-      selectedMedia = null;
+    if (pickedFile != null) {
+      selectedMedia = File(pickedFile.path);
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
   Future<void> uploadStory(BuildContext context,Story story) async {

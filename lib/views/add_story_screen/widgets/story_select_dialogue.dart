@@ -28,7 +28,7 @@ class StorySelectDialogue extends StatelessWidget {
                 StoryPickButton(
                   icon: Iconsax.camera,
                   text: 'Camera',
-                  onTap: () => _handlePick(pro,pro1,ImageSource.camera),
+                  onTap: () => pro.captureMedia(ImageSource.camera)
                 ),
                 StoryPickButton(
                   icon: Iconsax.gallery,
@@ -46,7 +46,7 @@ class StorySelectDialogue extends StatelessWidget {
   void _handlePick(StoryController storyController,
       ImageControllers imageController, ImageSource source) {
     if (story == IsStory.story) {
-      storyController.pickMedia(source);
+      // storyController.pickMedia();
     } else {
       imageController.pickImage(source);
     }
