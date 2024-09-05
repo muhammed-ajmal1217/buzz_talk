@@ -1,13 +1,18 @@
 import 'dart:developer';
+import 'package:buzztalk/constants/app_colors.dart';
+import 'package:buzztalk/constants/app_urls.dart';
 import 'package:buzztalk/controller/chat_provider.dart';
 import 'package:buzztalk/model/user_model.dart';
-import 'package:buzztalk/service/auth_service.dart';
+import 'package:buzztalk/views/chat_screen/widgets/image_full_screen.dart';
+import 'package:buzztalk/widgets/video_player_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enefty_icons/enefty_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatBubble extends StatefulWidget {
   final Size size;
@@ -40,7 +45,7 @@ class _ChatBubbleState extends State<ChatBubble> {
     return Consumer<ChatProvider>(builder: (context, chatProvider, child) {
       if (chatProvider.messages.isEmpty) {
         return Center(
-          child: Text('No messages', style: TextStyle(color: Colors.white)),
+          child: Text('No messages', style: TextStyle(color: white)),
         );
       } else {
         return ListView.builder(
@@ -78,7 +83,6 @@ class _ChatBubbleState extends State<ChatBubble> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     minHeight: widget.size.height * 0.05,
-                    minWidth: widget.size.width * 0.2,
                     maxWidth: widget.size.width * 0.7,
                   ),
                   child: Container(
@@ -87,26 +91,81 @@ class _ChatBubbleState extends State<ChatBubble> {
                       borderRadius: borderRadius,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            chats.content!,
-                            style: GoogleFonts.raleway(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
+                          if (chats.messageType == "text")
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                chats.content!,
+                                style: GoogleFonts.raleway(
+                                  color: white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            )
+                          else if (chats.messageType == "files")
+                            SizedBox(
+                                height: widget.size.height*0.35,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: GestureDetector(
+                                    child: chats.content!.contains('.jpg')? Container(
+                                      width: widget.size.width,
+                                      height: widget.size.height,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(chats.content!))),
+                                    ):VideoWidget(videoUrl: chats.content??'',mediaType: VideoType.chat,),
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImageFullDesplay(filePath: chats.content??'',),));
+                                    },
+                                  ),
+                                ))
+                          else if (chats.messageType == "location")
+                            InkWell(
+                              onTap: () async {
+                                await launchUrl(Uri.parse(
+                                    "${AppUrls.locationBaseUrl}${chats.content ?? ''}"));
+                                log('chat: ${chats.content}');
+                              },
+                              child: Container(
+                                width: 130,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(EneftyIcons.location_outline,
+                                          color: lightPeakoke),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Location",
+                                        style: GoogleFonts.raleway(
+                                          color: lightPeakoke,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            
                           SizedBox(
-                            width: widget.size.width * 0.14,
+                            width: widget.size.width * 0.10,
                             child: Align(
                               alignment: alignment,
                               child: Text(
                                 '$formattedTime',
                                 style: TextStyle(
                                   fontSize: 8,
-                                  color: Colors.white.withOpacity(0.7),
+                                  color: white.withOpacity(0.7),
                                 ),
                               ),
                             ),

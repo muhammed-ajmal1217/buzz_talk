@@ -46,11 +46,9 @@ class StorySelectDialogue extends StatelessWidget {
   void _handlePick(StoryController storyController,
       ImageControllers imageController, ImageSource source) {
     if (story == IsStory.story) {
-      // storyController.pickMedia();
+      storyController.pickMedia();
     } else {
       imageController.pickImage(source);
     }
   }
 }
-
-

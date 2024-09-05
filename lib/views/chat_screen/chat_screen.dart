@@ -213,7 +213,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (messageController.text.isNotEmpty) {
       ChatService().sendMessage(
         widget.user.userId ?? "",
-        messageController.text,
+        messageController.text,"text"
       );
       messageController.clear();
     }

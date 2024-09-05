@@ -41,7 +41,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                       : AssetImage(userIcon)),
             ),
             child: selectedMedia != null && _isVideo(selectedMedia)
-                ? VideoWidgetPlay(videoUrl: selectedMedia.path)
+                ? VideoWidget(videoUrl: selectedMedia.path,mediaType: VideoType.story,)
                 : null,
           ),
           pro.selectedMedia != null

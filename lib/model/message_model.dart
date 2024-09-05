@@ -5,12 +5,14 @@ class MessageModel {
   String? senderId;
   String? recieverId;
   Timestamp? time;
+  String? messageType;
 
   MessageModel({
     this.content,
     this.recieverId,
     this.senderId,
     this.time,
+    this.messageType,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class MessageModel {
       recieverId: json["recieverId"],
       senderId: json["senderId"],
       time: json["timestamp"],
+      messageType: json["message_type"]
     );
   }
 
@@ -28,6 +31,7 @@ class MessageModel {
       "recieverId": recieverId,
       "senderId": senderId,
       "timestamp":time,
+      "message_type":messageType,
     };
   }
 }

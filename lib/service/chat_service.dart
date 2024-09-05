@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:buzztalk/model/message_model.dart';
 import 'package:buzztalk/service/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,14 +12,16 @@ class ChatService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   AuthenticationService authService = AuthenticationService();
   Reference storage = FirebaseStorage.instance.ref();
+  String downloadurl="";
 
-  sendMessage(String recieverId, String message) async {
+  sendMessage(String recieverId, String message,String messageType) async {
     final String currentUserId = firebaseAuth.currentUser!.uid;
     MessageModel newmessage = MessageModel(
       content: message,
       recieverId: recieverId,
       senderId: currentUserId,
       time: Timestamp.now(),
+      messageType: messageType
     );
 
     List ids = [currentUserId, recieverId];
@@ -44,7 +49,20 @@ class ChatService {
   }
     void sendLocationMessage(String location, String receiverId) async {
     try {
-      sendMessage(receiverId, location,);
+      sendMessage(receiverId, location,'location');
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+  Future<void> addImageMessage(String receiverId, File image) async {
+    Reference childFolder = FirebaseStorage.instance.ref().child('files');
+    Reference imageUpload = childFolder.child("${image.toString()}");
+
+    try {
+      await imageUpload.putFile(image);
+      String downloadUrl = await imageUpload.getDownloadURL();
+      await sendMessage(receiverId, downloadUrl, "files");
+      log('Image sent successfully');
     } catch (e) {
       throw Exception(e);
     }

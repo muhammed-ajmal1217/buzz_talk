@@ -1,5 +1,4 @@
 import 'package:buzztalk/model/message_model.dart';
-import 'package:buzztalk/service/auth_service.dart';
 import 'package:buzztalk/service/chat_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

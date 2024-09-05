@@ -1,96 +1,45 @@
+import 'package:buzztalk/constants/app_colors.dart';
+import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+enum VideoType { story, chat, videoplay }
+
 class VideoWidget extends StatefulWidget {
   final String videoUrl;
+  final VideoType mediaType;
 
-  const VideoWidget({Key? key, required this.videoUrl}) : super(key: key);
+  const VideoWidget({
+    Key? key,
+    required this.videoUrl,
+    required this.mediaType,
+  }) : super(key: key);
 
   @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+  _VideoWidgetState createState() => _VideoWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoWidget> {
+class _VideoWidgetState extends State<VideoWidget> {
   late VideoPlayerController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((value) {
-        setState(() {
-          controller.play(); 
-        });
-      });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Container(
-            height: size.height,
-            width: size.width,
-            child: controller.value.isInitialized
-                ? VideoPlayer(controller)
-                : Container(),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              controller.value.isPlaying ? controller.pause() : controller.play();
-            });
-          },
-          
-        )
-      ],
-    );
-  }
-
-}
-class VideoWidgetPlay extends StatefulWidget {
-  final String videoUrl;
-
-  const VideoWidgetPlay({Key? key, required this.videoUrl}) : super(key: key);
-
-  @override
-  _VideoWidgetPlayState createState() => _VideoWidgetPlayState();
-}
-
-class _VideoWidgetPlayState extends State<VideoWidgetPlay> {
-  late VideoPlayerController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = VideoPlayerController.network(widget.videoUrl)
+    controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
       ..initialize().then((_) {
         setState(() {
-          controller.play();
+          if (widget.mediaType == VideoType.story) {
+            controller.setLooping(true);
+            controller.play();
+          }
         });
       });
   }
 
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -101,22 +50,59 @@ class _VideoWidgetPlayState extends State<VideoWidgetPlay> {
             width: size.width,
             child: controller.value.isInitialized
                 ? VideoPlayer(controller)
-                : Container(),
+                : Center(child: CircularProgressIndicator()),
           ),
         ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              controller.value.isPlaying ? controller.pause() : controller.play();
-            });
-          },
-          child: Icon(
-            controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-            size: 50.0,
-            color: Colors.white,
+        if (widget.mediaType == VideoType.videoplay)
+          InkWell(
+            onTap: () {
+              setState(() {
+                controller.value.isPlaying
+                    ? controller.pause()
+                    : controller.play();
+              });
+            },
+            child: controller.value.isPlaying
+                ? null
+                : CircleAvatar(
+                    backgroundColor: white.withOpacity(0.2),
+                    radius: 35,
+                    child: Center(
+                      child: Icon(
+                        EneftyIcons.play_outline,
+                        size: 50,
+                        color: white,
+                      ),
+                    ),
+                  ),
           ),
-        ),
+        if (widget.mediaType == VideoType.chat)
+          CircleAvatar(
+            backgroundColor: white.withOpacity(0.2),
+            radius: 25,
+            child: Center(
+              child: Icon(
+                EneftyIcons.play_outline,
+                size: 25,
+                color: white,
+              ),
+            ),
+          ),
+        if (widget.mediaType == VideoType.story && !controller.value.isPlaying)
+          InkWell(
+            onTap: () {
+              setState(() {
+                controller.play();
+              });
+            },
+          ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
