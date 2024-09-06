@@ -67,4 +67,12 @@ class ChatService {
       throw Exception(e);
     }
   }
+  uploadPdf(String recieverId, String fileName, File file) async {
+    final reference = storage.child("pdfs/$fileName");
+    final uploadTask = reference.putFile(file);
+    await uploadTask.whenComplete(() {});
+    final downloadLink = await reference.getDownloadURL();
+    sendMessage(recieverId, downloadLink, 'pdf',);
+    return downloadLink;
+  }
 }

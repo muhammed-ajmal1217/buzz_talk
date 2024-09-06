@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:buzztalk/controller/chat_provider.dart';
 import 'package:buzztalk/controller/story_controller.dart';
 import 'package:buzztalk/helpers/helpers.dart';
 import 'package:buzztalk/model/user_model.dart';
@@ -37,138 +38,53 @@ class _BottomSheetPageState extends State<BottomSheetPage> {
       ),
       child: Padding(
         padding: const EdgeInsets.only(top: 40),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ChatSelectionCircle(
-              size: size,
-              icon: Iconsax.location,
-              text: 'Location',
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      backgroundColor: Color.fromARGB(255, 19, 25, 35),
-                      actions: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 15),
-                            child: Container(
-                              height: 80,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                    fit: BoxFit.contain,
-                                    image:
-                                        AssetImage("assets/location_png.png")),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Icon(Iconsax.location, color: Colors.white),
-                            SizedBox(width: 10),
-                            Text(
-                              "Share your current location?",
-                              style:
-                                  TextStyle(fontSize: 17, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(
-                                        255, 33, 215, 243)),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                getCurrentLocation().then((value) {
-                                  setState(() {
-                                    locationMessage =
-                                        'Latitude: $lat, Longitude: $long';
-                                  });
-                                  print('lat: ${lat}');
-                                  print('lon: ${long}');
-                                  ChatService().sendLocationMessage(
-                                    '${lat},${long}',
-                                    widget.user?.userId ?? '',
-                                  );
-                                });
-                              },
-                              child: Text(
-                                'Share',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(
-                                        255, 33, 215, 243)),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            spacingWidth(20),
-            ChatSelectionCircle(
-              size: size,
-              icon: Iconsax.document,
-              text: 'Docs',
-              onTap: () {},
-            ),
-            spacingWidth(20),
-            ChatSelectionCircle(
-              size: size,
-              icon: Iconsax.gallery,
-              text: 'Gallery',
-              onTap: () async {
-                await Provider.of<StoryController>(context, listen: false)
-                    .pickMedia();
-                final file =
-                    Provider.of<StoryController>(context, listen: false)
-                        .selectedMedia;
-                log('${Provider.of<StoryController>(context, listen: false).selectedMedia}');
-                if (file != null) {
+        child: Consumer<ChatProvider>(
+          builder: (context, controller, child) => 
+           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ChatSelectionCircle(
+                size: size,
+                icon: Iconsax.location,
+                text: 'Location',
+                onTap: () {
                   showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        backgroundColor: Colors.transparent,
-                        content: Container(
-                          height: 300,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            image: file.path.endsWith('.jpg') ||
-                                    file.path.endsWith('.png')
-                                ? DecorationImage(
-                                    fit: BoxFit.contain,
-                                    image: FileImage(file),
-                                  )
-                                : null,
-                          ),
-                          child: file.path.endsWith('.mp4')
-                              ? VideoWidget(
-                                  videoUrl: file.path,mediaType: VideoType.videoplay,)
-                              : null,
-                        ),
+                        backgroundColor: Color.fromARGB(255, 19, 25, 35),
                         actions: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Container(
+                                height: 80,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image:
+                                          AssetImage("assets/location_png.png")),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Iconsax.location, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(
+                                "Share your current location?",
+                                style:
+                                    TextStyle(fontSize: 17, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               TextButton(
                                 onPressed: () {
@@ -178,20 +94,29 @@ class _BottomSheetPageState extends State<BottomSheetPage> {
                                   'Cancel',
                                   style: TextStyle(
                                       color: const Color.fromARGB(
-                                          255, 33, 243, 222)),
+                                          255, 33, 215, 243)),
                                 ),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  final receiverId = widget.user?.userId ?? '';
-                                  sendFiles(receiverId, context);
-                                  Navigator.pop(context);
+                                  getCurrentLocation().then((value) {
+                                    setState(() {
+                                      locationMessage =
+                                          'Latitude: $lat, Longitude: $long';
+                                    });
+                                    print('lat: ${lat}');
+                                    print('lon: ${long}');
+                                    ChatService().sendLocationMessage(
+                                      '${lat},${long}',
+                                      widget.user?.userId ?? '',
+                                    );
+                                  });
                                 },
                                 child: Text(
                                   'Share',
                                   style: TextStyle(
                                       color: const Color.fromARGB(
-                                          255, 33, 243, 222)),
+                                          255, 33, 215, 243)),
                                 ),
                               ),
                             ],
@@ -200,10 +125,91 @@ class _BottomSheetPageState extends State<BottomSheetPage> {
                       );
                     },
                   );
-                }
-              },
-            ),
-          ],
+                },
+              ),
+              spacingWidth(20),
+              ChatSelectionCircle(
+                size: size,
+                icon: Iconsax.document,
+                text: 'Docs',
+                onTap: () {
+                  controller.pickDocument(widget.user!.userId!);
+                },
+              ),
+              spacingWidth(20),
+              ChatSelectionCircle(
+                size: size,
+                icon: Iconsax.gallery,
+                text: 'Gallery',
+                onTap: () async {
+                  await Provider.of<StoryController>(context, listen: false)
+                      .pickMedia();
+                  final file =
+                      Provider.of<StoryController>(context, listen: false)
+                          .selectedMedia;
+                  log('${Provider.of<StoryController>(context, listen: false).selectedMedia}');
+                  if (file != null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.transparent,
+                          content: Container(
+                            height: 300,
+                            width: 300,
+                            decoration: BoxDecoration(
+                              image: file.path.endsWith('.jpg') ||
+                                      file.path.endsWith('.png')
+                                  ? DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: FileImage(file),
+                                    )
+                                  : null,
+                            ),
+                            child: file.path.endsWith('.mp4')
+                                ? VideoWidget(
+                                    videoUrl: file.path,mediaType: VideoType.videoplay,)
+                                : null,
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                        color: const Color.fromARGB(
+                                            255, 33, 243, 222)),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    final receiverId = widget.user?.userId ?? '';
+                                    sendFiles(receiverId, context);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Share',
+                                    style: TextStyle(
+                                        color: const Color.fromARGB(
+                                            255, 33, 243, 222)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
